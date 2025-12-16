@@ -10,6 +10,7 @@ import torch
 from uuid import uuid4
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Form
+from fastapi import APIRouter, Form
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
@@ -248,24 +249,18 @@ def generate_tts(text, meta, lang):
 # ================================================================
 # FASTAPI
 # ================================================================
-app = FastAPI(title="Sinhala + Tamil Emotion API")
+router = APIRouter()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 ###############################################################
 # SINHALA ROUTES
 ###############################################################
-@app.post("/sinhala/predict-emotion")
+@router.post("/sinhala/predict-emotion")
 async def sinhala_predict(text: str = Form(...)):
     result = predict_emotion(text, lang="si")
     return JSONResponse(result)
 
-@app.post("/sinhala/predict-emotion-tts")
+@router.post("/sinhala/predict-emotion-tts")
 async def sinhala_predict_tts(text: str = Form(...)):
     result = predict_emotion(text, lang="si")
     audio = generate_tts(result["text"], result, "si")
@@ -275,7 +270,7 @@ async def sinhala_predict_tts(text: str = Form(...)):
         "audio_url": f"http://localhost:8000/audio/sinhala/{audio}"
     })
 
-@app.get("/audio/sinhala/{filename}")
+@router.get("/audio/sinhala/{filename}")
 async def sinhala_audio(filename: str):
     file = os.path.join(SINHALA_TTS_DIR, filename)
     return FileResponse(file, media_type="audio/wav")
@@ -284,12 +279,12 @@ async def sinhala_audio(filename: str):
 ###############################################################
 # TAMIL ROUTES
 ###############################################################
-@app.post("/tamil/predict-emotion")
+@router.post("/tamil/predict-emotion")
 async def tamil_predict(text: str = Form(...)):
     result = predict_emotion(text, lang="ta")
     return JSONResponse(result)
 
-@app.post("/tamil/predict-emotion-tts")
+@router.post("/tamil/predict-emotion-tts")
 async def tamil_predict_tts(text: str = Form(...)):
     result = predict_emotion(text, lang="ta")
     audio = generate_tts(result["text"], result, "ta")
@@ -299,7 +294,7 @@ async def tamil_predict_tts(text: str = Form(...)):
         "audio_url": f"http://localhost:8000/audio/tamil/{audio}"
     })
 
-@app.get("/audio/tamil/{filename}")
+@router.get("/audio/tamil/{filename}")
 async def tamil_audio(filename: str):
     file = os.path.join(TAMIL_TTS_DIR, filename)
     return FileResponse(file, media_type="audio/wav")
