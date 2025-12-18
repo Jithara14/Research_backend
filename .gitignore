@@ -7,6 +7,36 @@ __pycache__/
 venv/
 
 
-
 # OS
 .DS_Store
+
+############################################### SHARUK ######################################################
+# Python virtual environment
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Installed libraries / runtime folders
+modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables
+.env
+
+# Audio / temp files (optional)
+*.wav
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# LLM / ML model files
+*.gguf
+models/
+
+#############################################################################################################
