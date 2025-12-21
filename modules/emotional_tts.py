@@ -84,7 +84,7 @@ SI_EMOTION_META = {
         "personality": "Alert, worried, cautious, easily startled",
         "pauses": "Irregular, broken pauses that express fear or hesitation"
     },
-    "angry": {
+    "anger": {
         "voice_affect": "Strong, forceful emotional color with heated energy",
         "tone": "Sharp, firm, intense tone with clear irritation",
         "pacing": "Fast, pressured, and forceful speaking rhythm",
@@ -183,6 +183,8 @@ TA_EMOTION_META = {
 # ================================================================
 # 3️⃣ EMOTION PREDICT + TTS FUNCTIONS
 # ================================================================
+# PREDICT EMOTION + FETCH META
+# ================================================================
 def predict_emotion(text, lang):
     cleaned = clean_text(text, lang)
 
@@ -199,27 +201,53 @@ def predict_emotion(text, lang):
         label_map = ta_id2label
         meta_map = TA_EMOTION_META
 
-    enc = tokenizer(cleaned, return_tensors="pt",
-                    truncation=True, padding="max_length", max_length=max_len)
+    # Tokenize input
+    enc = tokenizer(
+        cleaned, return_tensors="pt",
+        truncation=True, padding="max_length", max_length=max_len
+    )
 
+    # Predict logits
     with torch.no_grad():
-        logits = model(input_ids=enc["input_ids"].to(DEVICE),
-                       attention_mask=enc["attention_mask"].to(DEVICE)
-                       ).logits
+        logits = model(
+            input_ids=enc["input_ids"].to(DEVICE),
+            attention_mask=enc["attention_mask"].to(DEVICE)
+        ).logits
 
     pred_id = torch.argmax(logits, dim=1).item()
 
-    if lang == "si":
-        emotion = label_map[str(pred_id)].lower()
-    else:
-        emotion = label_map[pred_id].lower()
+    # Get predicted emotion label
+    raw_emotion = label_map[str(pred_id)] if lang == "si" else label_map[pred_id]
+    raw_emotion = raw_emotion.strip().lower()
 
-    meta = meta_map.get(emotion, meta_map["neutral"])
+    # Normalize to match meta keys exactly
+    emotion_key_map = {
+        "anger": "anger",
+        "ang": "anger",
+        "fear": "fear",
+        "sadness": "sad",
+        "sad":"sad",
+        "happ": "happy",
+        "happy": "happy",
+        "surprise": "surprise",
+        "neutral": "neutral"
+    }
+    emotion = emotion_key_map.get(raw_emotion, "neutral")
+
+    # Fetch meta for the emotion
+    meta = meta_map[emotion]
+
+    # Include emotion in meta for TTS instructions
+    meta["emotion_name"] = emotion  
 
     return {"text": text, "emotion": emotion, **meta}
 
 
+# ================================================================
+# GENERATE TTS BASED ON META
+# ================================================================
 def generate_tts(text, meta, lang):
+    # Use emotion_name key to avoid collision with emotion_description
     instructions = (
         f"Affect: {meta['voice_affect']}\n"
         f"Tone: {meta['tone']}\n"
@@ -236,6 +264,7 @@ def generate_tts(text, meta, lang):
         instructions=instructions
     )
 
+    # Save audio
     filename = f"{uuid4().hex}.wav"
     folder = SINHALA_TTS_DIR if lang == "si" else TAMIL_TTS_DIR
     filepath = os.path.join(folder, filename)
