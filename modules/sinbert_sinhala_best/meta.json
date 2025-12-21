@@ -1,0 +1,19 @@
+{
+  "label_map": {
+    "happy": 0,
+    "sad": 1,
+    "fear": 2,
+    "angry": 3,
+    "surprise": 4,
+    "neutral": 5
+  },
+  "id2label": {
+    "0": "happy",
+    "1": "sad",
+    "2": "fear",
+    "3": "angry",
+    "4": "surprise",
+    "5": "neutral"
+  },
+  "max_len": 128
+}
