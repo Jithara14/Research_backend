@@ -1,4 +1,4 @@
-git checkout sharu
+git checkout sharuk
 git add .
-git commit -m "message"
-git push -u origin sharu
+git commit -m "Commit test"
+git push -u origin sharuk
