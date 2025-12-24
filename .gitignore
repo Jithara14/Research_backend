@@ -39,4 +39,91 @@ Thumbs.db
 *.gguf
 models/
 
+# Virtual environments
+.venv/
+venv/
+RAG/venvRAG/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Models / LoRA / datasets
+RAG/qwen25-tamil-lora/
+RAG/data/
+DataSet/
+Gemma/
+
+# ===============================
+# Python environments & cache
+# ===============================
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# ===============================
+# VS Code
+# ===============================
+.vscode/
+
+# ===============================
+# Environment variables
+# ===============================
+.env
+.env.*
+
+# ===============================
+# OS files
+# ===============================
+.DS_Store
+Thumbs.db
+
+# ===============================
+# LLM / ML models & checkpoints
+# ===============================
+*.gguf
+*.bin
+*.safetensors
+*.pt
+*.pth
+models/
+Gemma/
+LLM_Talk_Back/
+RAG/models/
+
+# ===============================
+# Datasets
+# ===============================
+DataSet/
+data/
+datasets/
+*.csv
+*.jsonl
+*.parquet
+
+# ===============================
+# HuggingFace / cache
+# ===============================
+.cache/
+huggingface/
+
+# ===============================
+# Audio files
+# ===============================
+*.wav
+*.mp3
+
+# ===============================
+# Logs / temp
+# ===============================
+*.log
+*.tmp
+
+
 #############################################################################################################
