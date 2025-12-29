@@ -1,6 +1,6 @@
 git checkout sharuk
 git add .
-git commit -m "Commit Colab"
+git commit -m "Commit Colab2"
 git push -u origin sharuk
 
 googlecolab='4/0ATX87lPq5LYEourGU_2vDlRyzranUgeCBGg9fiJxA4If8Sg22ZY6QijQg9Zg7fQvIsmQfg'
